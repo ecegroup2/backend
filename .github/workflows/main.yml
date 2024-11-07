@@ -1,0 +1,62 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Spring Boot Project
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # Set up Java environment
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'  # Replace with the Java version your project uses
+
+      # Build the project with Maven
+      - name: Build with Maven
+        run: mvn clean package
+
+      # Upload the built .jar file as an artifact
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: spring-boot-jar
+          path: target/*.jar
+
+  deploy:
+    name: Deploy JAR to Deployment Branch
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: spring-boot-jar
+          path: ./release
+
+      # Set up Git configuration to commit to the deployment branch
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      # Create or update the deployment branch and push the JAR file
+      - name: Push to deployment branch
+        run: |
+          git checkout -b deployment-branch || git checkout deployment-branch
+          git rm -rf .  # Clean branch
+          mv ./release/*.jar ./app.jar  # Rename jar file if needed
+          git add app.jar
+          git commit -m "Deploy new build"
+          git push origin deployment-branch --force
