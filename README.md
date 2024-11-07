@@ -1,6 +1,6 @@
 # Backend
 
-Download java 17: [Download](https://builds.openlogic.com/downloadJDK/openlogic-openjdk/17.0.13+11/openlogic-openjdk-17.0.13+11-windows-x64.zip)
+Download java 17: [Download](https://builds.openlogic.com/downloadJDK/openlogic-openjdk-jre/17.0.13+11/openlogic-openjdk-jre-17.0.13+11-windows-x64.zip)
 
 
 ## Run Locally
