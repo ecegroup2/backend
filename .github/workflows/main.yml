@@ -1,0 +1,54 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build Spring Boot Project
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      # Set up Java environment
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'  # Replace with the Java version your project uses
+
+      # Build the project with Maven
+      - name: Build with Maven
+        run: mvn clean package
+
+      # Upload the built .jar file as an artifact
+      - name: Upload JAR artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: spring-boot-jar
+          path: target/*.jar
+          
+  deploy:
+    name: Deploy JAR to Deployment Branch
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - name: Download JAR artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: spring-boot-jar
+        path: ./release
+
+    # Use peaceiris/actions-gh-pages to deploy to deployment-branch
+    - name: Deploy to deployment-branch
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: deployment-branch
+        publish_dir: ./release
+
