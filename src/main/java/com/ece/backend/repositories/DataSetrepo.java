@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ece.backend.models.DataSet;
 @Repository
-public interface DataSetrepo extends JpaRepository<DataSet,Integer> {
+public interface DataSetrepo extends JpaRepository<DataSet,Long> {
 
     
 }
