@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,10 +23,12 @@ import com.ece.backend.repositories.DataSetrepo;
 public class DatasetController {
     @Autowired
     DataSetrepo repo;
+    @CrossOrigin(origins = {"http://localhost:5501","http://raspi.local","https://raspi.local"})
     @GetMapping("/getall")
     public ResponseEntity<List<DataSet>> getall(){
         return new ResponseEntity<>( repo.findAll(),HttpStatus.OK);
     }
+    @CrossOrigin(origins = {"http://localhost:5501","http://raspi.local","https://raspi.local"})
     @GetMapping("/get/{id}")
     public ResponseEntity<DataSet> getById(@PathVariable Long id){
         if (repo.count()>0){
@@ -40,6 +43,7 @@ public class DatasetController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
+    @CrossOrigin(origins = "http://localhost:5501")
     @PostMapping("/add")
     public ResponseEntity<DataSet> adddata(@RequestBody DataSet data){
         DataSet dataSet=new DataSet();
@@ -50,6 +54,7 @@ public class DatasetController {
         repo.save(dataSet);
         return new ResponseEntity<>(dataSet,HttpStatus.CREATED);
     }
+    @CrossOrigin(origins = {"http://localhost:5501","http://raspi.local","https://raspi.local"})
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletedata(@PathVariable Long id){
          Boolean isExists=repo.existsById(id);
