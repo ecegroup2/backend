@@ -21,6 +21,11 @@ jobs:
           distribution: 'temurin'
           java-version: '17'  # Replace with the Java version your project uses
 
+      # Modify application.properties to set active profile to prod
+      - name: Set spring.profiles.active to prod
+        run: |
+          sed -i 's/^spring.profiles.active=dev$/spring.profiles.active=prod/' src/main/resources/application.properties
+
       # Build the project with Maven
       - name: Build with Maven
         run: mvn clean package
@@ -51,4 +56,3 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: deployment-branch
         publish_dir: ./release
-
