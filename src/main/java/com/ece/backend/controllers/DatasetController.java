@@ -1,5 +1,8 @@
 package com.ece.backend.controllers;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ece.backend.models.DataSet;
@@ -43,7 +47,16 @@ public class DatasetController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
-    @CrossOrigin(origins = "http://localhost:5501")
+    @CrossOrigin(origins = {"http://localhost:5501","http://raspi.local","https://raspi.local"})
+    @GetMapping("/getByDate")
+    public ResponseEntity<List<DataSet>> getByDate(@RequestParam String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate date2 =LocalDate.parse(date.toString());
+        String parsedDate=date2.format(formatter);
+        System.out.println(parsedDate);
+        return new ResponseEntity<>( repo.findByDate(parsedDate),HttpStatus.OK);
+    }
+
     @PostMapping("/add")
     public ResponseEntity<DataSet> adddata(@RequestBody DataSet data){
         DataSet dataSet=new DataSet();
