@@ -2,7 +2,6 @@ package com.ece.backend.controllers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,6 @@ public class DatasetController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate date2 =LocalDate.parse(date.toString());
         String parsedDate=date2.format(formatter);
-        System.out.println(parsedDate);
         return new ResponseEntity<>( repo.findByDate(parsedDate),HttpStatus.OK);
     }
 
