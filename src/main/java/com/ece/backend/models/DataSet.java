@@ -1,16 +1,22 @@
 package com.ece.backend.models;
 
-
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+
+/*
+ * The DataSet class represents a data entry for a user's health readings.
+ * It contains fields for storing a user's ID, heart rate, and blood oxygen saturation (SpO2).
+ * This class is mapped to a database table using JPA annotations.
+ */
 
 @Entity
 public class DataSet {
     @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //  * The unique identifier for each data entry, representing the user's ID.
     private Long userId;
+    //  * The heart rate measurement for the user.
     private double heartrate;
+    //  *The blood oxygen saturation (SpO2) measurement for the user.
     private double spo2;
     
     public double getHeartrate() {
