@@ -31,14 +31,14 @@ public class DatasetController {
     DataSetrepo repo;
 
     // Provides origins to handle cors in testing and production
-    @CrossOrigin(origins = {"http://localhost:5501","http://raspi.local","https://raspi.local"})
+    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local"})
     // * Retrieves all available data entries from the database.
     @GetMapping("/getall")
     public ResponseEntity<List<DataSet>> getall(){
         return new ResponseEntity<>( repo.findAll(),HttpStatus.OK);
     }
 
-    @CrossOrigin(origins = {"http://localhost:5501","http://raspi.local","https://raspi.local"})
+    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local"})
     // Provides individual data based on its id
     @GetMapping("/get/{id}")
     public ResponseEntity<DataSet> getById(@PathVariable Long id){
@@ -57,7 +57,7 @@ public class DatasetController {
         }
     }
 
-    @CrossOrigin(origins = {"http://localhost:5501","http://raspi.local","https://raspi.local"})
+    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local"})
     /* 
     * Filters data based on date in format yyyy-mm--dd
     *api is avialaible by /getBydate?date=yyyy-mm-dd
@@ -81,12 +81,11 @@ public class DatasetController {
         dataSet.setSpo2(data.getSpo2());
         dataSet.setUserId(data.getUserId());
         dataSet.setHeartrate(data.getHeartrate());
-        System.out.println(dataSet);
         repo.save(dataSet);
         return new ResponseEntity<>(dataSet,HttpStatus.CREATED);
     }
     
-    @CrossOrigin(origins = {"http://localhost:5501","http://raspi.local","https://raspi.local"})
+    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local"})
     // this provides api to delete a particular data bassed on its id
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletedata(@PathVariable Long id){
