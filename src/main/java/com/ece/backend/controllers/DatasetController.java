@@ -5,6 +5,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ece.backend.models.DataSet;
+import com.ece.backend.models.DataSetwrapper;
 import com.ece.backend.repositories.DataSetrepo;
 
 /*
@@ -66,17 +68,22 @@ public class DatasetController {
     public ResponseEntity<List<DataSet>> getByDate(@RequestParam String date){
         // converts yyyy-mm-dd format of date to yyyymmdd to better searching 
         // based on id which is yyyymmddHourMinSec
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-        LocalDate date2 =LocalDate.parse(date.toString());
-        String parsedDate=date2.format(formatter);
-        return new ResponseEntity<>( repo.findByDate(parsedDate),HttpStatus.OK);
-    }
+        try{
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+            LocalDate date2 =LocalDate.parse(date.toString());
+            String parsedDate=date2.format(formatter);
+            return new ResponseEntity<>( repo.findByDate(parsedDate),HttpStatus.OK);
+        }
+        catch(Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        }
     
     // This method is only used to add data into DB
     // its used by arduino to upload data
     // its simple postrequest at /add with json format of data
     @PostMapping("/add")
-    public ResponseEntity<DataSet> adddata(@RequestBody DataSet data){
+    public ResponseEntity<DataSet> adddata(@RequestBody DataSetwrapper data){
         DataSet dataSet=new DataSet();
         dataSet.setSpo2(data.getSpo2());
         dataSet.setUserId(data.getUserId());
@@ -85,6 +92,22 @@ public class DatasetController {
         return new ResponseEntity<>(dataSet,HttpStatus.CREATED);
     }
     
+    // Api to add ecg data
+    @PostMapping("/addecg")
+    public ResponseEntity<DataSet> addecgdata(@RequestBody double[] data){
+        // checking for whether there is data or not
+        if (repo.count()>0){
+            // getting last data to append ecg reading
+            DataSet repoData=repo.findLastData();
+            repoData.setEcg(data);
+            repo.save(repoData);
+            return new ResponseEntity<>(repoData,HttpStatus.CREATED);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local"})
     // this provides api to delete a particular data bassed on its id
     @DeleteMapping("/delete/{id}")
