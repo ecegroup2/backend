@@ -18,4 +18,6 @@ public interface DataSetrepo extends JpaRepository<DataSet,Long> {
     // * The userId is expected to be in a format that includes a date portion (e.g., yyyyMMdd).
     @Query(value = "SELECT * FROM DATA_SET WHERE USER_ID like ?1%", nativeQuery = true)
     List<DataSet> findByDate(String id);
+    @Query(value = "SELECT * FROM DATA_SET ORDER BY USER_ID DESC LIMIT 1", nativeQuery = true)
+    DataSet findLastData();
 }

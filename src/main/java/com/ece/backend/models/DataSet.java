@@ -18,7 +18,15 @@ public class DataSet {
     private double heartrate;
     //  *The blood oxygen saturation (SpO2) measurement for the user.
     private double spo2;
-    
+    //  *Ecg graph points
+    private double ecg[];
+
+    public double[] getEcg() {
+        return ecg;
+    }
+    public void setEcg(double[] ecg) {
+        this.ecg = ecg;
+    }
     public double getHeartrate() {
         return heartrate;
     }
