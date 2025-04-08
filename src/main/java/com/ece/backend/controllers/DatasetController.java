@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.ece.backend.models.DataSet;
-import com.ece.backend.models.DataSetwrapper;
 import com.ece.backend.repositories.DataSetrepo;
 
 /*
@@ -33,14 +31,14 @@ public class DatasetController {
     DataSetrepo repo;
 
     // Provides origins to handle cors in testing and production
-    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local"})
+    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local","http://raspi.local"})
     // * Retrieves all available data entries from the database.
     @GetMapping("/getall")
     public ResponseEntity<List<DataSet>> getall(){
         return new ResponseEntity<>( repo.findAll(),HttpStatus.OK);
     }
 
-    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local"})
+    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local","http://raspi.local"})
     // Provides individual data based on its id
     @GetMapping("/get/{id}")
     public ResponseEntity<DataSet> getById(@PathVariable Long id){
@@ -59,7 +57,7 @@ public class DatasetController {
         }
     }
 
-    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local"})
+    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local","http://raspi.local"})
     /* 
     * Filters data based on date in format yyyy-mm--dd
     *api is avialaible by /getBydate?date=yyyy-mm-dd
@@ -83,11 +81,12 @@ public class DatasetController {
     // its used by arduino to upload data
     // its simple postrequest at /add with json format of data
     @PostMapping("/add")
-    public ResponseEntity<DataSet> adddata(@RequestBody DataSetwrapper data){
+    public ResponseEntity<DataSet> adddata(@RequestBody DataSet data){
         DataSet dataSet=new DataSet();
         dataSet.setSpo2(data.getSpo2());
         dataSet.setUserId(data.getUserId());
         dataSet.setHeartrate(data.getHeartrate());
+        dataSet.setEcg(data.getEcg());
         repo.save(dataSet);
         return new ResponseEntity<>(dataSet,HttpStatus.CREATED);
     }
@@ -108,7 +107,7 @@ public class DatasetController {
         }
     }
 
-    @CrossOrigin(origins = {"http://localhost:5501","https://raspi.local"})
+    @CrossOrigin(origins ={"http://localhost:5501","https://raspi.local","http://raspi.local"})
     // this provides api to delete a particular data bassed on its id
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletedata(@PathVariable Long id){
