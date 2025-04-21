@@ -1,0 +1,12 @@
+services:
+  app:
+    image: soumikcoder/ecegroup2-backend
+    container_name: springboot_app
+    ports: 
+      - "9080:9080"
+    volumes: 
+      - h2db:/app/target/h2db/db/
+    restart: unless-stopped
+volumes:
+  h2db:
+    external: true
